@@ -119,7 +119,7 @@ void parseLine(const String line) {
     endPos = line.indexOf('*');
     activePowerL1Production = line.substring(startPos, endPos).toFloat();
   } 
-  else if (line.startsWith("0-1:24.1.0")) {
+  else if (line.startsWith("0-1:96.1.0")) {
     // Extract gas meter ID between parentheses
     startPos = line.indexOf('(') + 1;
     endPos = line.indexOf(')');

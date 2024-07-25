@@ -46,7 +46,7 @@ void loop() {
   while (p1Serial.available()) {
     char inChar = (char)p1Serial.read();
     inputString += inChar;
-    if (inChar == '\n') {
+    if (inChar == '!') { // End of DSMR message indicated by '!'
       stringComplete = true;
     }
   }
