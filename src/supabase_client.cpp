@@ -5,11 +5,11 @@
 #include "dsmr_parser.h"
 
 String formatTimestamp(const String& rawTimestamp) {
-  // Assuming rawTimestamp is in the format DDMMYYHHMMSS
+  // Assuming rawTimestamp is in the format YYMMDDhhmm
   // Convert it to YYYY-MM-DD HH:MM:SS
-  String year = "20" + rawTimestamp.substring(4, 6); // Add "20" to the year part
+  String year = "20" + rawTimestamp.substring(0, 2); // Add "20" to the year part
   String month = rawTimestamp.substring(2, 4);
-  String day = rawTimestamp.substring(0, 2);
+  String day = rawTimestamp.substring(4, 6);
   String hour = rawTimestamp.substring(6, 8);
   String minute = rawTimestamp.substring(8, 10);
   String second = rawTimestamp.substring(10, 12);
