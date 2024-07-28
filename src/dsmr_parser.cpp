@@ -19,6 +19,7 @@ float activePowerL1Consumption;   // Active power consumption in phase L1 in kW
 float activePowerL1Production;    // Active power production in phase L1 in kW
 String gasMeterID;                 // Gas meter ID
 float gasMeterReading;             // Gas meter reading in m³
+String gasMeterTimestamp;             // Gas meter reading in m³
 
 void parseLine(const String line) {
   int startPos, endPos;
@@ -62,7 +63,7 @@ void parseLine(const String line) {
   else if (line.startsWith("0-0:96.14.0")) {
     // Extract current tariff between parentheses and convert to integer
     startPos = line.indexOf('(') + 1;
-    endPos = line.indexOf(')');
+    endPos = line.indexOf('S');
     currentTariff = line.substring(startPos, endPos).toInt();
   } 
   else if (line.startsWith("1-0:1.7.0")) {
@@ -126,9 +127,14 @@ void parseLine(const String line) {
     gasMeterID = line.substring(startPos, endPos);
   } 
   else if (line.startsWith("0-1:24.2.1")) {
-    // Extract gas meter reading in cubic meters between parentheses and convert to float
+    // Extract timestamp between the first set of parentheses
     startPos = line.indexOf('(') + 1;
-    endPos = line.indexOf('*');
+    endPos = line.indexOf('S');
+    gasMeterTimestamp = line.substring(startPos, endPos);
+
+    // Extract gas meter reading between the second set of parentheses and convert to double
+    startPos = line.indexOf('(', endPos) + 1;
+    endPos = line.indexOf('*', startPos);
     gasMeterReading = line.substring(startPos, endPos).toFloat();
   }
 }

@@ -27,6 +27,7 @@ void sendDataToSupabase() {
     http.addHeader("apikey", supabase_key);
 
     String formattedTimestamp = formatTimestamp(timestamp);
+    String formattedGasMeterTimestamp = formatTimestamp(gasMeterTimestamp);
 
     JsonDocument doc;
     doc["meter_id"] = meterID;
@@ -47,6 +48,7 @@ void sendDataToSupabase() {
     doc["active_power_l1_production"] = activePowerL1Production;
     doc["gas_meter_id"] = gasMeterID;
     doc["gas_meter_reading"] = gasMeterReading;
+    doc["gas_meter_timestamp"] = formattedGasMeterTimestamp;
 
     String requestBody;
     serializeJson(doc, requestBody);

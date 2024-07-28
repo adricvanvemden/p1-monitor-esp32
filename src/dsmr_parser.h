@@ -21,6 +21,7 @@ extern float activePowerL1Consumption;
 extern float activePowerL1Production;
 extern String gasMeterID;
 extern float gasMeterReading;
+extern String gasMeterTimestamp;
 
 void parseLine(String line);
 
