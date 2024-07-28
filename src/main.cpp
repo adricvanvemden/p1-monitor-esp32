@@ -1,9 +1,13 @@
 #include <HardwareSerial.h>
+#include <WiFi.h>
+#include <driver/uart.h>
 #include "dsmr_parser.h"
 #include "supabase_client.h"
 #include "config.h"
-#include <WiFi.h>
-#include <driver/uart.h>
+#include "wifi_manager.h"
+#include "OTA.h"
+#include "telnet_handler.h"
+
 
 // Create an instance of HardwareSerial for UART2
 HardwareSerial p1Serial(2); // Use UART2
@@ -12,12 +16,7 @@ void setup() {
   Serial.begin(monitorBaudRate);
 
   // Connect to WiFi
-  WiFi.begin(wifi_ssid, wifi_password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
-  }
-  Serial.println("Connected to WiFi");
+  connectToWiFi();
 
   // Initialize UART2 with correct pins and baud rate
   p1Serial.begin(p1BaudRate, SERIAL_8N1, RX2, TX2);
@@ -37,9 +36,16 @@ void setup() {
   uart_set_line_inverse(UART_NUM_2, UART_SIGNAL_RXD_INV);
 
   Serial.println("P1 Port Reader Started");
+
+  setupOTA();
+  setupTelnet();
 }
 
 void loop() {
+  checkWiFiConnection();
+  handleOTA();
+  handleTelnet();
+
   static String inputString = "";
   static bool stringComplete = false;
 
