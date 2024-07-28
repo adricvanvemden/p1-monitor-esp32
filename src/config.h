@@ -7,5 +7,6 @@ extern const char* wifi_ssid;
 extern const char* wifi_password;
 extern const int monitorBaudRate;
 extern const int p1BaudRate;
+extern const char* dns_name;
 
-#endif // CONFIG_H
+#endif
