@@ -35,7 +35,7 @@ void setup() {
   uart_set_pin(UART_NUM_2, TX2, RX2, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
   uart_set_line_inverse(UART_NUM_2, UART_SIGNAL_RXD_INV);
 
-  Serial.println("P1 Port Reader Started");
+  SerialTelnetPrintln("P1 Port Reader Started");
 
   setupOTA();
   setupTelnet();
@@ -59,8 +59,8 @@ void loop() {
 
   // When the string is complete, process it and reset the variables
   if (stringComplete) {
-    Serial.println("Received DSMR data:");
-    Serial.println(inputString);
+    SerialTelnetPrintln("Received DSMR data:");
+    SerialTelnetPrintln(inputString);
 
     // Process each line of the DSMR data
     int startIndex = 0;

@@ -3,6 +3,7 @@
 #include <ArduinoJson.h>
 #include "config.h"
 #include "dsmr_parser.h"
+#include "telnet_handler.h"
 
 String formatTimestamp(const String& rawTimestamp) {
   // Assuming rawTimestamp is in the format YYMMDDhhmm
@@ -51,16 +52,19 @@ void sendDataToSupabase() {
     serializeJson(doc, requestBody);
 
     int httpResponseCode = http.POST(requestBody);
+     String strValue = "";
+    strValue += httpResponseCode;
     if (httpResponseCode > 0) {
       String response = http.getString();
-      Serial.println(httpResponseCode);
-      Serial.println(response);
+
+      SerialTelnetPrintln(strValue);
+      SerialTelnetPrintln(response);
     } else {
-      Serial.print("Error on sending POST: ");
-      Serial.println(httpResponseCode);
+      SerialTelnetPrint("Error on sending POST: ");
+      SerialTelnetPrintln(strValue);
     }
     http.end();
   } else {
-    Serial.println("WiFi not connected");
+    SerialTelnetPrintln("WiFi not connected");
   }
 }

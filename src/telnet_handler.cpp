@@ -4,24 +4,43 @@
 #include <ESPmDNS.h>
 #include "config.h"
 
+void SerialTelnetPrint(const String &message) {
+  Serial.print(message);
+  TelnetStream.print(message);
+}
+
+void SerialTelnetPrintln(const String &message) {
+  Serial.println(message);
+  TelnetStream.println(message);
+}
+
+void SerialTelnetPrintF(const char* format, ...) {
+    char buffer[128];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+    Serial.print(buffer);
+    TelnetStream.print(buffer);
+}
+
 void setupTelnet() {
   TelnetStream.begin();
   TelnetStream.println("Telnet server started");
 
     // Initialize mDNS
-  if (!MDNS.begin(dns_name)) {
-    Serial.println("Error setting up MDNS responder!");
+  if (!MDNS.begin(hostname)) {
+    SerialTelnetPrintln("Error setting up MDNS responder!");
   } else {
-    Serial.println("mDNS responder started");
+    SerialTelnetPrintln("mDNS responder started");
   }
 }
 
 void handleTelnet() {
-  if (TelnetStream.available()) {
-    while (TelnetStream.available()) {
+    if (TelnetStream.available()) {
       Serial.write(TelnetStream.read());
     }
-  }
+  
 
   if (Serial.available()) {
     size_t len = Serial.available();

@@ -6,4 +6,4 @@ const char* wifi_ssid = "your_wifi_ssid";
 const char* wifi_password = "your_wifi_password";
 const int monitorBaudRate = 9600;
 const int p1BaudRate = 115200;
-const char* dns_name = "esp32-p1-reader";
+const char* hostname = "esp32-p1-reader";
