@@ -23,7 +23,7 @@ This project is designed to monitor and log data from a DSMR (Dutch Smart Meter 
 
 ## Usage
 
-1. **Change config details** in config.cpp
+1. **Change config details** in config_example.cpp and rename to config.cpp
 2. **Upload the code** to your ESP32 using Arduino IDE or PlatformIO.
 3. **Connect the ESP32 to your smart meter** using the RJ11 cable.
 
