@@ -11,4 +11,13 @@
  */
 void sendDataToSupabase(const String& raw);
 
+/**
+ * Print what this device is actually sending, with the token masked.
+ *
+ * Called at boot and again on every 401, because a telnet client connects long after boot and would
+ * otherwise never see it. Reports lengths and flags stray whitespace — a 401 with credentials that
+ * "look right" is nearly always a paste that carried a newline or lost its tail.
+ */
+void logIngestConfig();
+
 #endif // SUPABASE_CLIENT_H

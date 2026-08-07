@@ -39,6 +39,7 @@ void setup() {
 
   setupOTA();
   setupTelnet();
+  logIngestConfig();
 }
 
 void loop() {

@@ -26,6 +26,38 @@
  * function. There is no `apikey` header because the function is deployed `--no-verify-jwt` — the
  * ESP32 has no Supabase user session to present.
  */
+/** Describes a credential without disclosing it: length, the ends, and whether it has stray edges. */
+static String describe(const char* value, size_t expected) {
+  const String s(value);
+  String out = "len=" + String(s.length());
+  if (expected && s.length() != expected) out += " (EXPECTED " + String(expected) + ")";
+  if (s.length() && (isspace((unsigned char)s[0]) || isspace((unsigned char)s[s.length() - 1]))) {
+    out += " HAS LEADING/TRAILING WHITESPACE";
+  }
+  // Ends only. Enough to spot a mismatch against the database by eye, useless to anyone reading the log.
+  if (s.length() > 8) out += "  " + s.substring(0, 4) + "…" + s.substring(s.length() - 4);
+  return out
+;
+}
+
+void logIngestConfig() {
+  /*
+   * The three values a 401 can be blamed on, and the two things that make a correct-looking value
+   * wrong: an unexpected length (a paste that lost its tail) and whitespace at either end (a paste
+   * that carried a newline). `meter_id` is `'p1_' || 10 hex` = 13 chars; `device_token` is
+   * `encode(gen_random_bytes(24),'hex')` = 48. Anything else did not come from register_meter().
+   */
+  SerialTelnetPrintln("Ingest config:");
+  SerialTelnetPrint("  url      ");
+  SerialTelnetPrintln(ingest_url);
+  SerialTelnetPrint("  meter_id ");
+  SerialTelnetPrint(meter_id);
+  SerialTelnetPrint("  ");
+  SerialTelnetPrintln(describe(meter_id, 13));
+  SerialTelnetPrint("  token    ");
+  SerialTelnetPrintln(describe(device_token, 48));
+}
+
 void sendDataToSupabase(const String& raw) {
   if (WiFi.status() != WL_CONNECTED) {
     SerialTelnetPrintln("WiFi not connected");
@@ -69,7 +101,8 @@ void sendDataToSupabase(const String& raw) {
     // 401 is the one worth calling out by name — it is almost always the wrong `meter_id`: the
     // telegram carries the meter's *equipment* id, which is not what register_meter() minted.
     if (status == 401) {
-      SerialTelnetPrintln("  -> unauthorized: check meter_id + device_token match the registered meter");
+      SerialTelnetPrintln("  -> unauthorized: no meters row matches BOTH meter_id and device_token");
+      logIngestConfig();
     }
   } else {
     SerialTelnetPrint("Ingest failed, HTTPClient error: ");
