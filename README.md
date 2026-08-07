@@ -54,7 +54,18 @@ Supabase user session to present.
 
 2. **Copy `src/config_example.cpp` to `src/config.cpp`** and fill in those three values plus your WiFi
    credentials. `src/config.cpp` is gitignored, so your secrets stay out of the repo.
-3. **Upload the code** to your ESP32 using Arduino IDE or PlatformIO.
+3. **Flash it.** The first flash must go over USB — OTA needs firmware already running on the device
+   to receive the update, so a fresh board (or one with the wrong WiFi credentials) is only reachable
+   by cable.
+
+   ```sh
+   pio run -e usb -t upload     # first flash, and recovery when OTA stops answering
+   pio run -t upload            # every flash after that — `ota` is the default env
+   ```
+
+   > If the upload does not start, hold **BOOT** while it says `Connecting...` and release once it
+   > begins. Most DevKit V1 boards auto-reset and never need this; some clones do.
+
 4. **Connect the ESP32 to your smart meter** using the RJ11 cable.
 
       ### RJ11 Cable Pin Configuration
