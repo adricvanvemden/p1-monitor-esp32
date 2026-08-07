@@ -62,7 +62,14 @@ void loop() {
     SerialTelnetPrintln("Received DSMR data:");
     SerialTelnetPrintln(inputString);
 
-    // Process each line of the DSMR data
+    /*
+     * Still parsed on-device, even though the server now does the parsing that counts.
+     *
+     * The upload sends the raw telegram and `p1-ingest` maps the OBIS codes itself, so these globals
+     * no longer leave the device. They stay because this is the only way to tell — over telnet, with
+     * no database round-trip — whether the P1 wiring actually works. A telegram that arrives but
+     * parses to zeroes points at the meter or the cable, not at the network.
+     */
     int startIndex = 0;
     int endIndex = inputString.indexOf('\n');
     while (endIndex != -1) {
@@ -72,8 +79,17 @@ void loop() {
       endIndex = inputString.indexOf('\n', startIndex);
     }
 
-    // Send data to Supabase
-    sendDataToSupabase();
+    SerialTelnetPrint("Parsed: ");
+    SerialTelnetPrint(String(currentConsumption, 3));
+    SerialTelnetPrint(" kW in, ");
+    SerialTelnetPrint(String(currentProduction, 3));
+    SerialTelnetPrint(" kW out, tariff ");
+    SerialTelnetPrint(String(currentTariff));
+    SerialTelnetPrint(", gas ");
+    SerialTelnetPrintln(String(gasMeterReading, 3));
+
+    // Send the raw telegram; the server parses and stores it.
+    sendDataToSupabase(inputString);
 
     // Reset the variables
     inputString = "";
